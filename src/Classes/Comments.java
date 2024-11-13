@@ -9,8 +9,8 @@ package Classes;
  * @author acer
  */
 public class Comments {
-    String content;
-    int date, id, post_id, user_id;
+    String content, date;
+    int id, post_id, user_id;
     
     public int getId(){
         return id;
@@ -24,7 +24,7 @@ public class Comments {
         return post_id;
     }
     
-    public int getDate(){
+    public String getDate(){
         return date;
     }
     

@@ -4,6 +4,14 @@
  */
 package GUI;
 
+import Config.Connect;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import Classes.Users;
+import javax.swing.JFrame;
 /**
  *
  * @author acer
@@ -13,8 +21,38 @@ public class Profile extends javax.swing.JFrame {
     /**
      * Creates new form Profile
      */
-    public Profile() {
+    public Profile(int id) {
         initComponents();
+
+        Users user = new Users(id);
+        name.setText(user.getName());
+        gender.setText(user.getGender());
+        bio.setText(user.getBio());
+        
+        try (Connection conn = Connect.getConnection(); Statement stmt = conn.createStatement()) {
+            String totalShare = "SELECT COUNT(*) FROM posts WHERE type = 's' AND user_id = " + user.getId();
+            ResultSet rsShare = stmt.executeQuery(totalShare);
+            
+            while(rsShare.next()){
+                totalPost.setText(String.valueOf(rsShare.getInt(1)));
+            }
+            
+           
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        try (Connection conn = Connect.getConnection(); Statement stmt = conn.createStatement()) {
+            String totalDis = "SELECT COUNT(*) FROM posts WHERE type = 'd' AND user_id = " + user.getId();
+            ResultSet rsDiscussion = stmt.executeQuery(totalDis);
+            
+            while(rsDiscussion.next()){
+                totalDiscussion.setText(String.valueOf(rsDiscussion.getInt(1)));
+            }
+           
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
@@ -29,13 +67,16 @@ public class Profile extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        name = new javax.swing.JLabel();
+        totalPost = new javax.swing.JLabel();
+        totalDiscussion = new javax.swing.JLabel();
+        bio = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        gender = new javax.swing.JLabel();
+        btnEditProfile = new javax.swing.JButton();
+        btnAddSharing = new javax.swing.JButton();
+        btnAddDiscussion = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -56,23 +97,44 @@ public class Profile extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel1.setText("Rama Nusa Bakti");
+        name.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        name.setText("Rama Nusa Bakti");
 
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("12");
+        totalPost.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        totalPost.setText("12");
 
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("120");
+        totalDiscussion.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        totalDiscussion.setText("120");
 
-        jLabel4.setText("A man will die but not his idea! Happy Nation!");
+        bio.setText("A man will die but not his idea! Happy Nation!");
 
-        jLabel5.setText("Posts");
+        jLabel5.setText("Sharing");
 
         jLabel6.setText("Discussions");
 
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
-        jLabel7.setText("Male");
+        gender.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
+        gender.setText("Male");
+
+        btnEditProfile.setText("Edit Profile");
+        btnEditProfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditProfileActionPerformed(evt);
+            }
+        });
+
+        btnAddSharing.setText("Add Sharing");
+        btnAddSharing.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddSharingActionPerformed(evt);
+            }
+        });
+
+        btnAddDiscussion.setText("Add Discussion");
+        btnAddDiscussion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddDiscussionActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -83,37 +145,49 @@ public class Profile extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel7))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 136, Short.MAX_VALUE)
+                            .addComponent(name)
+                            .addComponent(gender))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 124, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(totalPost, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(56, 56, 56)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(totalDiscussion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(40, 40, 40))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
+                        .addComponent(bio)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(btnEditProfile)
+                .addGap(18, 18, 18)
+                .addComponent(btnAddSharing)
+                .addGap(18, 18, 18)
+                .addComponent(btnAddDiscussion)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3))
+                    .addComponent(name)
+                    .addComponent(totalPost)
+                    .addComponent(totalDiscussion))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(jLabel5)
-                    .addComponent(jLabel7))
+                    .addComponent(gender))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addComponent(bio)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnEditProfile)
+                    .addComponent(btnAddSharing)
+                    .addComponent(btnAddDiscussion))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         jLabel9.setText("Posts");
@@ -128,7 +202,7 @@ public class Profile extends javax.swing.JFrame {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 153, Short.MAX_VALUE)
+            .addGap(0, 85, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -162,11 +236,11 @@ public class Profile extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -174,13 +248,34 @@ public class Profile extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(35, 35, 35)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnEditProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditProfileActionPerformed
+        // TODO add your handling code here:
+        EditProfile EP = new EditProfile();
+        EP.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        EP.setVisible(true);
+    }//GEN-LAST:event_btnEditProfileActionPerformed
+
+    private void btnAddDiscussionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDiscussionActionPerformed
+        // TODO add your handling code here:
+        AddPost AP = new AddPost('D');
+        AP.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        AP.setVisible(true);
+    }//GEN-LAST:event_btnAddDiscussionActionPerformed
+
+    private void btnAddSharingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddSharingActionPerformed
+        // TODO add your handling code here:
+        AddPost AP = new AddPost('S');
+        AP.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        AP.setVisible(true);
+    }//GEN-LAST:event_btnAddSharingActionPerformed
 
     /**
      * @param args the command line arguments
@@ -212,25 +307,28 @@ public class Profile extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Profile().setVisible(true);
+                new Profile(1).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel bio;
+    private javax.swing.JButton btnAddDiscussion;
+    private javax.swing.JButton btnAddSharing;
+    private javax.swing.JButton btnEditProfile;
+    private javax.swing.JLabel gender;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JLabel name;
+    private javax.swing.JLabel totalDiscussion;
+    private javax.swing.JLabel totalPost;
     // End of variables declaration//GEN-END:variables
 }
