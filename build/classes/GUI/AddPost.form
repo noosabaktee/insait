@@ -100,7 +100,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="title">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Add Post"/>
+        <Property name="text" type="java.lang.String" value="Add Discussion Post"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JPanel" name="commentPanel">

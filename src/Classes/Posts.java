@@ -63,7 +63,19 @@ public class Posts {
     }
     
     public int totalComment(){
-        return 1;
+        int total = 0;
+        try (Connection conn = Connect.getConnection(); Statement stmt = conn.createStatement()) {
+            String query = "SELECT COUNT(*) FROM comments WHERE post_id = " + this.id;
+            ResultSet rs = stmt.executeQuery(query);
+            
+            while(rs.next()){
+                total = rs.getInt(1);
+            }
+           
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return total;
     }
     
     public char getType(){

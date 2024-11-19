@@ -4,6 +4,12 @@
  */
 package Classes;
 
+import Config.Connect;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 /**
  *
  * @author acer
@@ -11,6 +17,24 @@ package Classes;
 public class Comments {
     String content, date;
     int id, post_id, user_id;
+    
+    public Comments(int id){
+        try (Connection conn = Connect.getConnection(); Statement stmt = conn.createStatement()) {
+            String userQuery = "SELECT * FROM comments WHERE id = " + id;
+            ResultSet rsUser = stmt.executeQuery(userQuery);
+            
+            while(rsUser.next()){
+                this.id = Integer.valueOf(rsUser.getString("id"));
+                this.user_id = Integer.valueOf(rsUser.getString("user_id"));
+                this.post_id = Integer.valueOf(rsUser.getString("post_id"));
+                this.content = rsUser.getString("content");
+                this.date = rsUser.getString("date");
+            }
+           
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
     
     public int getId(){
         return id;

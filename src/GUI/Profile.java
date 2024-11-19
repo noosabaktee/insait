@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import Classes.Posts;
 import Config.Connect;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -11,6 +12,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 import Classes.Users;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 /**
  *
@@ -21,9 +26,14 @@ public class Profile extends javax.swing.JFrame {
     /**
      * Creates new form Profile
      */
+    int offset = 0;
+    int limit = 1;
+    int user_id;
     public Profile(int id) {
+        this.user_id = id;
         initComponents();
-
+        panelPost.setLayout(new BoxLayout(panelPost, BoxLayout.Y_AXIS));
+        updatePost('S',offset,limit);
         Users user = new Users(id);
         name.setText(user.getName());
         gender.setText(user.getGender());
@@ -55,6 +65,39 @@ public class Profile extends javax.swing.JFrame {
         }
     }
 
+    
+    private void updatePost(char type, int offset, int limit){
+        try (Connection conn = Connect.getConnection(); Statement stmt = conn.createStatement()) {
+            String query = "SELECT * FROM posts WHERE type = '" + type + "' AND user_id = '"+ this.user_id +"' ORDER BY id DESC LIMIT " + offset + "," + limit;
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                Posts post = new Posts(rs.getInt("id")); 
+                CardPostUser cp = new CardPostUser(post);
+                panelPost.add(cp);
+                buttonMore();
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    private void buttonMore(){
+        JButton buttonMore = new JButton();
+        buttonMore.setSize(400,400);
+        buttonMore.setVisible(true);
+        buttonMore.setText("See More");
+        buttonMore.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panelPost.remove(buttonMore);
+                panelPost.revalidate();
+                panelPost.repaint();
+                offset++;
+                updatePost('S',offset,limit);
+            }
+        });
+        panelPost.add(buttonMore);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -66,6 +109,8 @@ public class Profile extends javax.swing.JFrame {
 
         jPanel2 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jPanel5 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         name = new javax.swing.JLabel();
         totalPost = new javax.swing.JLabel();
@@ -77,10 +122,9 @@ public class Profile extends javax.swing.JFrame {
         btnEditProfile = new javax.swing.JButton();
         btnAddSharing = new javax.swing.JButton();
         btnAddDiscussion = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jPanel4 = new javax.swing.JPanel();
+        Sharing = new javax.swing.JLabel();
+        Disussions = new javax.swing.JLabel();
+        panelPost = new javax.swing.JPanel();
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -96,6 +140,8 @@ public class Profile extends javax.swing.JFrame {
         jLabel8.setText("jLabel8");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         name.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         name.setText("Rama Nusa Bakti");
@@ -190,47 +236,61 @@ public class Profile extends javax.swing.JFrame {
                 .addContainerGap(35, Short.MAX_VALUE))
         );
 
-        jLabel9.setText("Posts");
+        Sharing.setText("Sharing");
+        Sharing.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                SharingMouseClicked(evt);
+            }
+        });
 
-        jLabel10.setText("Discussions");
+        Disussions.setText("Discussions");
+        Disussions.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                DisussionsMouseClicked(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout panelPostLayout = new javax.swing.GroupLayout(panelPost);
+        panelPost.setLayout(panelPostLayout);
+        panelPostLayout.setHorizontalGroup(
+            panelPostLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 85, Short.MAX_VALUE)
+        panelPostLayout.setVerticalGroup(
+            panelPostLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 113, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(94, 94, 94)
-                .addComponent(jLabel9)
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(59, 59, 59)
+                .addComponent(Sharing)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel10)
-                .addGap(68, 68, 68))
-            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(Disussions)
+                .addGap(98, 98, 98))
+            .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panelPost, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(jLabel10))
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Sharing)
+                    .addComponent(Disussions))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(panelPost, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
+
+        jScrollPane1.setViewportView(jPanel5);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -238,19 +298,15 @@ public class Profile extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         pack();
@@ -276,6 +332,26 @@ public class Profile extends javax.swing.JFrame {
         AP.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         AP.setVisible(true);
     }//GEN-LAST:event_btnAddSharingActionPerformed
+
+    private void SharingMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SharingMouseClicked
+        // TODO add your handling code here:
+        offset = 0;
+        limit = 1;
+        panelPost.removeAll();
+        panelPost.revalidate();
+        panelPost.repaint();
+        updatePost('S',offset,limit);
+    }//GEN-LAST:event_SharingMouseClicked
+
+    private void DisussionsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DisussionsMouseClicked
+        // TODO add your handling code here:
+        offset = 0;
+        limit = 1;
+        panelPost.removeAll();
+        panelPost.revalidate();
+        panelPost.repaint();
+        updatePost('D',offset,limit);
+    }//GEN-LAST:event_DisussionsMouseClicked
 
     /**
      * @param args the command line arguments
@@ -313,21 +389,22 @@ public class Profile extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Disussions;
+    private javax.swing.JLabel Sharing;
     private javax.swing.JLabel bio;
     private javax.swing.JButton btnAddDiscussion;
     private javax.swing.JButton btnAddSharing;
     private javax.swing.JButton btnEditProfile;
     private javax.swing.JLabel gender;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel name;
+    private javax.swing.JPanel panelPost;
     private javax.swing.JLabel totalDiscussion;
     private javax.swing.JLabel totalPost;
     // End of variables declaration//GEN-END:variables
