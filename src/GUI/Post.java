@@ -5,8 +5,10 @@
 package GUI;
 
 import Classes.Comments;
+import static Classes.LoginPreferences.loadId;
 import Classes.Posts;
 import Classes.Sharing;
+import Classes.Users;
 import Config.Connect;
 import java.awt.List;
 import java.awt.event.ActionEvent;
@@ -32,7 +34,8 @@ public class Post extends javax.swing.JFrame {
      * Creates new form Post
      */
     int id;
-    int user_id = 1;
+    int user_id = loadId();
+    int post_user_id;
 //  for comment
     int offset = 0;
     int limit = 1;
@@ -57,6 +60,9 @@ public class Post extends javax.swing.JFrame {
         }
         
         title.setText(post.getTitle());
+        Users userPost = new Users(post.getUserId());
+        postedBy.setText("Diposting oleh " + userPost.getName());
+        post_user_id = userPost.getId();
         content.setText("<html>" + post.getContent().replace("\n", "<br>")+ "</html>");
             
     }
@@ -102,6 +108,7 @@ public class Post extends javax.swing.JFrame {
         txtComment = new javax.swing.JTextArea();
         btnSend = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        postedBy = new javax.swing.JLabel();
         panelComment = new javax.swing.JPanel();
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -155,12 +162,10 @@ public class Post extends javax.swing.JFrame {
             .addGroup(formCommentLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(formCommentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(formCommentLayout.createSequentialGroup()
-                        .addGroup(formCommentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnSend)
-                            .addComponent(jLabel1))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSend)
+                    .addComponent(jLabel1))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         formCommentLayout.setVerticalGroup(
             formCommentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -174,6 +179,14 @@ public class Post extends javax.swing.JFrame {
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
+        postedBy.setText("disini");
+        postedBy.setPreferredSize(new java.awt.Dimension(200, 16));
+        postedBy.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                postedByMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -184,10 +197,13 @@ public class Post extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(title)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(postedBy, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(206, 206, 206))
+                            .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -196,8 +212,10 @@ public class Post extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(title)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(postedBy, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(115, 115, 115)
+                .addGap(2, 2, 2)
                 .addComponent(formComment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -208,7 +226,7 @@ public class Post extends javax.swing.JFrame {
         panelComment.setLayout(panelCommentLayout);
         panelCommentLayout.setHorizontalGroup(
             panelCommentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 240, Short.MAX_VALUE)
+            .addGap(0, 359, Short.MAX_VALUE)
         );
         panelCommentLayout.setVerticalGroup(
             panelCommentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -222,10 +240,10 @@ public class Post extends javax.swing.JFrame {
             .addGroup(panelPostLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelPostLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(panelPostLayout.createSequentialGroup()
                         .addComponent(panelComment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 114, Short.MAX_VALUE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         panelPostLayout.setVerticalGroup(
@@ -235,7 +253,7 @@ public class Post extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(panelComment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(87, Short.MAX_VALUE))
         );
 
         jScrollPane4.setViewportView(panelPost);
@@ -308,6 +326,13 @@ public class Post extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSendActionPerformed
 
+    private void postedByMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_postedByMouseClicked
+        // TODO add your handling code here:
+        Profile profile = new Profile(post_user_id);
+        profile.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        profile.setVisible(true);
+    }//GEN-LAST:event_postedByMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -338,7 +363,7 @@ public class Post extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Post(3).setVisible(true);
+//                new Post(3).setVisible(true);
             }
         });
 //        SwingUtilities.invokeLater(() -> new Post(2));
@@ -359,6 +384,7 @@ public class Post extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JPanel panelComment;
     private javax.swing.JPanel panelPost;
+    private javax.swing.JLabel postedBy;
     private java.awt.ScrollPane scrollPane1;
     private javax.swing.JLabel title;
     private javax.swing.JTextArea txtComment;

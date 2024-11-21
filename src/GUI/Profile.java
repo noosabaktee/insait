@@ -38,6 +38,7 @@ public class Profile extends javax.swing.JFrame {
         name.setText(user.getName());
         gender.setText(user.getGender());
         bio.setText(user.getBio());
+        background.setText(user.getFaculty() + " - " + user.getUniversity());
         
         try (Connection conn = Connect.getConnection(); Statement stmt = conn.createStatement()) {
             String totalShare = "SELECT COUNT(*) FROM posts WHERE type = 's' AND user_id = " + user.getId();
@@ -122,6 +123,7 @@ public class Profile extends javax.swing.JFrame {
         btnEditProfile = new javax.swing.JButton();
         btnAddSharing = new javax.swing.JButton();
         btnAddDiscussion = new javax.swing.JButton();
+        background = new javax.swing.JLabel();
         Sharing = new javax.swing.JLabel();
         Disussions = new javax.swing.JLabel();
         panelPost = new javax.swing.JPanel();
@@ -182,6 +184,8 @@ public class Profile extends javax.swing.JFrame {
             }
         });
 
+        background.setText("Faculty - University");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -191,9 +195,13 @@ public class Profile extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(name)
-                            .addComponent(gender))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 124, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(name)
+                                .addGap(18, 18, 18)
+                                .addComponent(gender)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(background, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(totalPost, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -211,7 +219,7 @@ public class Profile extends javax.swing.JFrame {
                 .addComponent(btnAddSharing)
                 .addGap(18, 18, 18)
                 .addComponent(btnAddDiscussion)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 95, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -220,12 +228,13 @@ public class Profile extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(name)
                     .addComponent(totalPost)
-                    .addComponent(totalDiscussion))
+                    .addComponent(totalDiscussion)
+                    .addComponent(gender))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(jLabel5)
-                    .addComponent(gender))
+                    .addComponent(background))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bio)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -265,17 +274,19 @@ public class Profile extends javax.swing.JFrame {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(59, 59, 59)
                 .addComponent(Sharing)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 182, Short.MAX_VALUE)
                 .addComponent(Disussions)
                 .addGap(98, 98, 98))
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(panelPost, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -383,7 +394,7 @@ public class Profile extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Profile(1).setVisible(true);
+//                new Profile().setVisible(true);
             }
         });
     }
@@ -391,6 +402,7 @@ public class Profile extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Disussions;
     private javax.swing.JLabel Sharing;
+    private javax.swing.JLabel background;
     private javax.swing.JLabel bio;
     private javax.swing.JButton btnAddDiscussion;
     private javax.swing.JButton btnAddSharing;

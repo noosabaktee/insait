@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -56,7 +57,14 @@ public class Comments {
         return content;
     }
     
-    public void deleteComment(){
-        
+    public int deleteComment(int id){
+        int i = 0;
+        try (Connection conn = Connect.getConnection(); Statement stmt = conn.createStatement()) {
+            String deleteComment = "DELETE FROM comments WHERE id = " + id;             
+            i = stmt.executeUpdate(deleteComment);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return i;
     }
 }

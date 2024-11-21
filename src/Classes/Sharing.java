@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -36,7 +37,15 @@ public class Sharing extends Posts{
         return comment;
     }
     
-    public void updatePost(String title, String content, boolean comment){
-        
+    public int updatePost(String title, String content, int comment){
+        int i = 0;
+        try (Connection conn = Connect.getConnection(); Statement stmt = conn.createStatement()) {
+            String updatePost = "UPDATE posts SET title = '" +title+ "', content = '" + content
+                + "', comment = " + comment + " WHERE id = "+ id;
+            i = stmt.executeUpdate(updatePost);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return i;
     }
 }

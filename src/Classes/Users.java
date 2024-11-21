@@ -15,7 +15,7 @@ import java.sql.Statement;
  * @author acer
  */
 public class Users {
-    String email, name, password, bio, gender, date;
+    String email, name, password, bio, gender, date, faculty, university;
     int id;
     
     public Users(int id){
@@ -24,13 +24,15 @@ public class Users {
             ResultSet rsUser = stmt.executeQuery(userQuery);
             
             while(rsUser.next()){
-                this.id = Integer.valueOf(rsUser.getString("id"));
+                this.id = rsUser.getInt("id");
                 this.name = rsUser.getString("name");
                 this.email = rsUser.getString("email");
                 this.password = rsUser.getString("password");
                 this.gender = rsUser.getString("gender");
                 this.bio = rsUser.getString("bio");
                 this.date = rsUser.getString("date");
+                this.faculty = rsUser.getString("faculty");
+                this.university = rsUser.getString("university");
             }
            
         } catch (SQLException e) {
@@ -66,15 +68,11 @@ public class Users {
         return date;
     }
     
-    public void setName(){
-        
+    public String getFaculty(){
+        return faculty;
     }
     
-     public void setBio(){
-        
-    }
-    
-    public void setPassword(){
-        
+    public String getUniversity(){
+        return university;
     }
 }

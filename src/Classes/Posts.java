@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -38,8 +39,19 @@ public class Posts {
         }
     }
     
-    public void deletePost(){
-        
+    public int deletePost(int id){
+        int result = 0;
+        try (Connection conn = Connect.getConnection(); Statement stmt = conn.createStatement()) {
+                String deletePost = "DELETE FROM posts WHERE id = " + id;
+                String deleteComment = "DELETE FROM comments WHERE post_id = " + id;
+                stmt.addBatch(deletePost);
+                stmt.addBatch(deleteComment);
+                int[] i = stmt.executeBatch();
+                result = i[0];
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return result;
     }
     
     public int getId(){

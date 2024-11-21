@@ -5,6 +5,8 @@
 package GUI;
 
 import Classes.Comments;
+import static Classes.LoginPreferences.loadId;
+import static Classes.LoginPreferences.logout;
 import Classes.Posts;
 import Config.Connect;
 import java.awt.Dimension;
@@ -18,6 +20,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -30,10 +33,17 @@ public class Home extends javax.swing.JFrame {
      */
     int offset = 0;
     int limit = 1;
+    char type = 'S';
     public Home() {
+        if(loadId() == 0){
+            Login lg = new Login();
+            lg.setVisible(true);
+            this.setVisible(false);
+            return;
+        }
         initComponents();
         panelPost.setLayout(new BoxLayout(panelPost, BoxLayout.Y_AXIS));
-        updatePost('S',offset,limit);
+        updatePost(offset,limit,"");
         
     }
 
@@ -54,15 +64,15 @@ public class Home extends javax.swing.JFrame {
                 panelPost.revalidate();
                 panelPost.repaint();
                 offset++;
-                updatePost('S',offset,limit);
+                updatePost(offset,limit,"");
             }
         });
         panelPost.add(buttonMore);
     }
     
-    private void updatePost(char type, int offset, int limit){
+    private void updatePost(int offset, int limit, String search){
         try (Connection conn = Connect.getConnection(); Statement stmt = conn.createStatement()) {
-            String query = "SELECT * FROM posts WHERE type = '" + type + "' ORDER BY id DESC LIMIT " + offset + "," + limit;
+            String query = "SELECT * FROM posts WHERE type = '" + type + "' AND (title LIKE '%" + search +"%' OR content LIKE '%"+ search +"%') ORDER BY id DESC LIMIT " + offset + "," + limit;
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 Posts post = new Posts(rs.getInt("id")); 
@@ -81,6 +91,7 @@ public class Home extends javax.swing.JFrame {
 
         jButton2 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         btnSharing = new javax.swing.JButton();
         btnDiscussion = new javax.swing.JButton();
@@ -90,10 +101,24 @@ public class Home extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         panelPost = new javax.swing.JPanel();
         title = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        txtSearch = new javax.swing.JTextField();
+        btnSearch = new javax.swing.JButton();
 
         jButton2.setText("Post");
 
         jLabel1.setText("jLabel1");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -121,6 +146,11 @@ public class Home extends javax.swing.JFrame {
         });
 
         btnLogout.setText("Logout");
+        btnLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogoutActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -152,14 +182,40 @@ public class Home extends javax.swing.JFrame {
         panelPost.setLayout(panelPostLayout);
         panelPostLayout.setHorizontalGroup(
             panelPostLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 418, Short.MAX_VALUE)
+            .addGap(0, 419, Short.MAX_VALUE)
         );
         panelPostLayout.setVerticalGroup(
             panelPostLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 372, Short.MAX_VALUE)
+            .addGap(0, 348, Short.MAX_VALUE)
         );
 
         title.setText("Sharing");
+
+        btnSearch.setText("Search");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnSearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSearch))
+                .addContainerGap(9, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -167,19 +223,22 @@ public class Home extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(title)
-                    .addComponent(panelPost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 19, Short.MAX_VALUE))
+                    .addComponent(panelPost, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 28, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(title)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelPost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         jScrollPane1.setViewportView(jPanel2);
@@ -210,7 +269,8 @@ public class Home extends javax.swing.JFrame {
     
     private void btnProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProfileActionPerformed
         // TODO add your handling code here:
-        Profile profile = new Profile(1);
+        Profile profile = new Profile(loadId());
+        profile.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         profile.setVisible(true);
     }//GEN-LAST:event_btnProfileActionPerformed
 
@@ -222,7 +282,8 @@ public class Home extends javax.swing.JFrame {
         panelPost.removeAll();
         panelPost.revalidate();
         panelPost.repaint();
-        updatePost('S',offset,limit);
+        type = 'S';
+        updatePost(offset,limit,"");
     }//GEN-LAST:event_btnSharingActionPerformed
 
     private void btnDiscussionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDiscussionActionPerformed
@@ -233,8 +294,33 @@ public class Home extends javax.swing.JFrame {
         panelPost.removeAll();
         panelPost.revalidate();
         panelPost.repaint();
-        updatePost('D',offset,limit);
+        type = 'D';
+        updatePost(offset,limit,"");
     }//GEN-LAST:event_btnDiscussionActionPerformed
+
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        // TODO add your handling code here:
+        int dialogButton = JOptionPane.YES_NO_OPTION;
+        int dialogResult = JOptionPane.showConfirmDialog (null, "Apakah anda ingin keluar?","Warning",dialogButton);
+        if(dialogResult == JOptionPane.YES_OPTION){
+            logout();
+            Login lg = new Login();
+            lg.setVisible(true);
+            this.setVisible(false);
+            return;
+        } 
+    }//GEN-LAST:event_btnLogoutActionPerformed
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        // TODO add your handling code here:
+        offset = 0;
+        limit = 1;
+        String search = txtSearch.getText();
+        panelPost.removeAll();
+        panelPost.revalidate();
+        panelPost.repaint();
+        updatePost(offset,limit,search);
+    }//GEN-LAST:event_btnSearchActionPerformed
 
     /**
      * @param args the command line arguments
@@ -275,13 +361,17 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JButton btnDiscussion;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnProfile;
+    private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnSharing;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelPost;
     private javax.swing.JLabel title;
+    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }

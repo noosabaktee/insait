@@ -4,6 +4,8 @@
  */
 package GUI;
 
+import static Classes.LoginPreferences.loadId;
+import static Classes.LoginPreferences.saveLogin;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import Config.Connect;
+import javax.swing.JFrame;
 /**
  *
  * @author acer
@@ -22,6 +25,12 @@ public class Register extends javax.swing.JFrame {
      * Creates new form Register
      */
     public Register() {
+        if(loadId() != 0){
+            Home hm = new Home();
+            hm.setVisible(true);
+            this.setVisible(false);
+            return;
+        }
         initComponents();
     }
 
@@ -44,7 +53,11 @@ public class Register extends javax.swing.JFrame {
         txtPassword = new javax.swing.JTextField();
         txtGender = new javax.swing.JComboBox<>();
         btnSignUp = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
+        toLogin = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txtFaculty = new javax.swing.JTextField();
+        txtUniversity = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -65,7 +78,16 @@ public class Register extends javax.swing.JFrame {
             }
         });
 
-        jLabel5.setText("Sudah punya akun? Login");
+        toLogin.setText("Sudah punya akun? Login");
+        toLogin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                toLoginMouseClicked(evt);
+            }
+        });
+
+        jLabel6.setText("Faculty");
+
+        jLabel7.setText("University");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -74,7 +96,7 @@ public class Register extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
+                    .addComponent(toLogin)
                     .addComponent(btnSignUp)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jLabel1)
@@ -84,7 +106,11 @@ public class Register extends javax.swing.JFrame {
                         .addComponent(jLabel3)
                         .addComponent(jLabel4)
                         .addComponent(txtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
-                        .addComponent(txtGender, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(txtGender, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel6)
+                        .addComponent(txtFaculty, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                        .addComponent(txtUniversity, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                        .addComponent(jLabel7)))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -106,11 +132,19 @@ public class Register extends javax.swing.JFrame {
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtFaculty, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtUniversity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnSignUp)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel5)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addComponent(toLogin)
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -125,9 +159,8 @@ public class Register extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -166,11 +199,22 @@ public class Register extends javax.swing.JFrame {
                 }
             }
             
-            String insertUser = "INSERT INTO users (name, email, gender, password, date) VALUES('" + 
+            String insertUser = "INSERT INTO users (name, email, gender, password, university, faculty, date) VALUES('" + 
                     txtName.getText() + "','" + txtEmail.getText()
-                + "','" + txtGender.getSelectedItem() + "','" + txtPassword.getText() + "','" + System.currentTimeMillis()+ "')";
+                + "','" + txtGender.getSelectedItem() + "','" + txtPassword.getText() +  "','" + txtUniversity.getText() + "','" + txtFaculty.getText() + "','" + System.currentTimeMillis()+ "')";
             int i = stmt.executeUpdate(insertUser);
             if (i > 0) {
+                String checkUser = "SELECT * FROM users WHERE email = '" + txtEmail.getText() +"' AND password = '" + txtPassword.getText() +"'";
+                ResultSet rsUser = stmt.executeQuery(checkUser);
+
+                while(rsUser.next()){
+                    saveLogin(rsUser.getInt("id"));
+                    Home hm = new Home();
+                    hm.setVisible(true);
+                    this.setVisible(false);
+                    return;
+
+                }
                 JOptionPane.showMessageDialog(null,
                 "Berhasil Register!");
                 return;
@@ -185,6 +229,13 @@ public class Register extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_btnSignUpActionPerformed
+
+    private void toLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toLoginMouseClicked
+        // TODO add your handling code here:
+        Login lg = new Login();
+        this.setVisible(false);
+        lg.setVisible(true);
+    }//GEN-LAST:event_toLoginMouseClicked
 
     /**
      * @param args the command line arguments
@@ -227,11 +278,15 @@ public class Register extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel toLogin;
     private javax.swing.JTextField txtEmail;
+    private javax.swing.JTextField txtFaculty;
     private javax.swing.JComboBox<String> txtGender;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtPassword;
+    private javax.swing.JTextField txtUniversity;
     // End of variables declaration//GEN-END:variables
 }

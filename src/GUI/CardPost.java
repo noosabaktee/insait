@@ -83,7 +83,7 @@ public class CardPost extends javax.swing.JPanel {
                 .addComponent(content)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(comments)
-                .addContainerGap(112, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

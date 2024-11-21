@@ -10,7 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
-
+import static Classes.LoginPreferences.loadId;
+import static Classes.LoginPreferences.saveLogin;
 /**
  *
  * @author acer
@@ -21,6 +22,12 @@ public class Login extends javax.swing.JFrame {
      * Creates new form Login
      */
     public Login() {
+        if(loadId() != 0){
+            Home hm = new Home();
+            hm.setVisible(true);
+            this.setVisible(false);
+            return;
+        }
         initComponents();
     }
 
@@ -39,7 +46,7 @@ public class Login extends javax.swing.JFrame {
         txtPassword = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         btnLogin = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
+        toRegister = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -54,7 +61,12 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        jLabel3.setText("Belum punya akun? Register");
+        toRegister.setText("Belum punya akun? Register");
+        toRegister.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                toRegisterMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -63,7 +75,7 @@ public class Login extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
+                    .addComponent(toRegister)
                     .addComponent(btnLogin)
                     .addComponent(jLabel1)
                     .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -85,7 +97,7 @@ public class Login extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(btnLogin)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel3)
+                .addComponent(toRegister)
                 .addContainerGap(115, Short.MAX_VALUE))
         );
 
@@ -113,24 +125,31 @@ public class Login extends javax.swing.JFrame {
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         // TODO add your handling code here:
         try (Connection conn = Connect.getConnection(); Statement stmt = conn.createStatement()) {
-            String checkEmail = "SELECT COUNT(*) FROM users WHERE email = '" + txtEmail.getText() +"' AND password = '" + txtPassword.getText() +"'";
-            ResultSet rsEmail = stmt.executeQuery(checkEmail);
+            String checkUser = "SELECT * FROM users WHERE email = '" + txtEmail.getText() +"' AND password = '" + txtPassword.getText() +"'";
+            ResultSet rsUser = stmt.executeQuery(checkUser);
             
-            while(rsEmail.next()){
-                if(rsEmail.getInt(1) >0){
-                    Home hm = new Home();
-                    hm.setVisible(true);
-                    this.setVisible(false);
-                }else{
-                    JOptionPane.showMessageDialog(null,
-                    "Email dan Password salah!");
-                }    
+            while(rsUser.next()){
+                saveLogin(rsUser.getInt("id"));
+                Home hm = new Home();
+                hm.setVisible(true);
+                this.setVisible(false);
+                return;
+                
             }
+            JOptionPane.showMessageDialog(null,
+            "Email dan Password salah!");
            
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }//GEN-LAST:event_btnLoginActionPerformed
+
+    private void toRegisterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toRegisterMouseClicked
+        // TODO add your handling code here:
+        Register rg = new Register();
+        rg.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_toRegisterMouseClicked
 
     /**
      * @param args the command line arguments
@@ -171,8 +190,8 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JButton btnLogin;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel toRegister;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtPassword;
     // End of variables declaration//GEN-END:variables

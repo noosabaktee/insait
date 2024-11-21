@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import static Classes.LoginPreferences.loadId;
 import Classes.Posts;
 import Classes.Users;
 import Config.Connect;
@@ -26,11 +27,17 @@ public class CardPostUser extends javax.swing.JPanel {
     public CardPostUser(Posts data) {
         this.data = data;
         initComponents();
-        Users user = new Users(data.getUserId());
+        Users postUser = new Users(data.getUserId());
         title.setText(data.getTitle());
-        posted.setText("Diposting oleh " + user.getName());
+        posted.setText("Diposting oleh " + postUser.getName());
         content.setText("<html>" + data.getContent().replace("\n", "<br>")+ "</html>");
         comments.setText(data.totalComment() + " Comments");
+        if(postUser.getId() != loadId()){
+            panelAction.setVisible(false);
+        }
+        if(data.getType() == 'D'){
+            btnEdit.setVisible(false);
+        }
     }
 
     /**
@@ -48,8 +55,9 @@ public class CardPostUser extends javax.swing.JPanel {
         posted = new javax.swing.JLabel();
         content = new javax.swing.JLabel();
         comments = new javax.swing.JLabel();
-        Edit = new javax.swing.JButton();
-        Delete = new javax.swing.JButton();
+        panelAction = new javax.swing.JPanel();
+        btnDelete = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
 
         jLabel4.setText("jLabel4");
 
@@ -69,19 +77,40 @@ public class CardPostUser extends javax.swing.JPanel {
 
         comments.setText("10");
 
-        Edit.setText("Edit");
-        Edit.addActionListener(new java.awt.event.ActionListener() {
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EditActionPerformed(evt);
+                btnDeleteActionPerformed(evt);
             }
         });
 
-        Delete.setText("Delete");
-        Delete.addActionListener(new java.awt.event.ActionListener() {
+        btnEdit.setText("Edit");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DeleteActionPerformed(evt);
+                btnEditActionPerformed(evt);
             }
         });
+
+        javax.swing.GroupLayout panelActionLayout = new javax.swing.GroupLayout(panelAction);
+        panelAction.setLayout(panelActionLayout);
+        panelActionLayout.setHorizontalGroup(
+            panelActionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelActionLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnDelete)
+                .addGap(3, 3, 3)
+                .addComponent(btnEdit)
+                .addContainerGap())
+        );
+        panelActionLayout.setVerticalGroup(
+            panelActionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelActionLayout.createSequentialGroup()
+                .addContainerGap(8, Short.MAX_VALUE)
+                .addGroup(panelActionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnDelete)
+                    .addComponent(btnEdit))
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -94,11 +123,8 @@ public class CardPostUser extends javax.swing.JPanel {
                     .addComponent(posted)
                     .addComponent(content)
                     .addComponent(comments)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(Edit)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Delete)))
-                .addContainerGap(344, Short.MAX_VALUE))
+                    .addComponent(panelAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(335, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -112,10 +138,8 @@ public class CardPostUser extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(comments)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Edit)
-                    .addComponent(Delete))
-                .addContainerGap(83, Short.MAX_VALUE))
+                .addComponent(panelAction, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -126,50 +150,40 @@ public class CardPostUser extends javax.swing.JPanel {
         post.setVisible(true);
     }//GEN-LAST:event_formMouseClicked
 
-    private void EditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditActionPerformed
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         // TODO add your handling code here:
         EditPost EP = new EditPost(data.getId());
         EP.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         EP.setVisible(true);
-    }//GEN-LAST:event_EditActionPerformed
+    }//GEN-LAST:event_btnEditActionPerformed
 
-    private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteActionPerformed
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
         int dialogButton = JOptionPane.YES_NO_OPTION;
-        int dialogResult = JOptionPane.showConfirmDialog (null, "Apakah anda ingin menghapus postingan ini??","Warning",dialogButton);
+        int dialogResult = JOptionPane.showConfirmDialog (null, "Apakah anda ingin menghapus postingan ini?","Warning",dialogButton);
         if(dialogResult == JOptionPane.YES_OPTION){
-          // Saving code here
-          System.out.print("Ya");
-            try (Connection conn = Connect.getConnection(); Statement stmt = conn.createStatement()) {
-                String deletePost = "DELETE FROM posts WHERE id = " + data.getId();
-                String deleteComment = "DELETE FROM comments WHERE post_id = " + data.getId();
-                stmt.addBatch(deletePost);
-                stmt.addBatch(deleteComment);
-                int[] i = stmt.executeBatch();
-                if (i[0] > 0) {
-                    JOptionPane.showMessageDialog(null,
-                    "Post berhasil dihapus!");
-                    this.setVisible(false);
-                } else {
-                    JOptionPane.showMessageDialog(null,
-                    "Post gagal dihapus!");
-                    this.setVisible(false);
-                }
-
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
+            int i = data.deletePost(data.getId());
+            if (i > 0) {
+                JOptionPane.showMessageDialog(null,
+                "Post berhasil dihapus!");
+                this.setVisible(false);
+            } else {
+                JOptionPane.showMessageDialog(null,
+                "Post gagal dihapus!");
+                this.setVisible(false);
             }
         }
-    }//GEN-LAST:event_DeleteActionPerformed
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Delete;
-    private javax.swing.JButton Edit;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnEdit;
     private javax.swing.JLabel comments;
     private javax.swing.JLabel content;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel panelAction;
     private javax.swing.JLabel posted;
     private javax.swing.JLabel title;
     // End of variables declaration//GEN-END:variables

@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import static Classes.LoginPreferences.loadId;
 import Classes.Users;
 import Config.Connect;
 import java.sql.Connection;
@@ -25,10 +26,12 @@ public class EditProfile extends javax.swing.JFrame {
     public EditProfile() {
         initComponents();
         
-        user = new Users(1);
+        user = new Users(loadId());
         txtName.setText(user.getName());
         txtGender.setSelectedItem(user.getGender());
         txtBio.setText(user.getBio());
+        txtUniversity.setText(user.getUniversity());
+        txtFaculty.setText(user.getFaculty());
         txtPassword.setText(user.getPassword());
     }
 
@@ -52,6 +55,10 @@ public class EditProfile extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         txtPassword = new javax.swing.JTextField();
         btnEdit = new javax.swing.JButton();
+        txtUniversity = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        txtFaculty = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -76,6 +83,10 @@ public class EditProfile extends javax.swing.JFrame {
             }
         });
 
+        jLabel10.setText("University");
+
+        jLabel11.setText("Faculty");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -93,8 +104,12 @@ public class EditProfile extends javax.swing.JFrame {
                             .addComponent(jLabel7)
                             .addComponent(jLabel8)
                             .addComponent(jLabel9)
-                            .addComponent(btnEdit))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addComponent(btnEdit)
+                            .addComponent(jLabel10)
+                            .addComponent(jLabel11))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(txtUniversity)
+                    .addComponent(txtFaculty))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -116,7 +131,15 @@ public class EditProfile extends javax.swing.JFrame {
                 .addComponent(jLabel9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtUniversity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtFaculty, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addComponent(btnEdit)
                 .addContainerGap())
         );
@@ -146,7 +169,7 @@ public class EditProfile extends javax.swing.JFrame {
         try (Connection conn = Connect.getConnection(); Statement stmt = conn.createStatement()) {
             String insertUser = "UPDATE users SET name = '"+ txtName.getText() 
                 +"', gender = '"+ txtGender.getSelectedItem() +"', bio = '"+ txtBio.getText() 
-                +"', password = '"+ txtPassword.getText() +"' WHERE id = " + user.getId();
+                +"', password = '" + txtPassword.getText() +"', university = '" + txtUniversity.getText() +"', faculty = '" + txtFaculty.getText() + "' WHERE id = " + user.getId();
             int i = stmt.executeUpdate(insertUser);
             if (i > 0) {
                 JOptionPane.showMessageDialog(null,
@@ -199,6 +222,8 @@ public class EditProfile extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEdit;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -206,8 +231,10 @@ public class EditProfile extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea txtBio;
+    private javax.swing.JTextField txtFaculty;
     private javax.swing.JComboBox<String> txtGender;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtPassword;
+    private javax.swing.JTextField txtUniversity;
     // End of variables declaration//GEN-END:variables
 }

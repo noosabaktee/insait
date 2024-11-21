@@ -5,11 +5,13 @@
 package GUI;
 
 import Classes.Comments;
+import static Classes.LoginPreferences.loadId;
 import Classes.Users;
 import Config.Connect;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -25,8 +27,10 @@ public class CardComment extends javax.swing.JPanel {
     public CardComment(Comments data) {
         this.data = data;
         initComponents();
-        initComponents();
         Users user = new Users(data.getUserId());
+        if(user.getId() != loadId()){
+            Delete.setVisible(false);
+        }
         name.setText(user.getName());
         content.setText("<html>" + data.getContent().replace("\n", "<br>")+ "</html>");
     }
@@ -45,6 +49,11 @@ public class CardComment extends javax.swing.JPanel {
         Delete = new javax.swing.JButton();
 
         name.setText("Name");
+        name.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                nameMouseClicked(evt);
+            }
+        });
 
         content.setText("Content");
 
@@ -74,37 +83,36 @@ public class CardComment extends javax.swing.JPanel {
                 .addComponent(name)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(content)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Delete)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteActionPerformed
         // TODO add your handling code here:
         int dialogButton = JOptionPane.YES_NO_OPTION;
-        int dialogResult = JOptionPane.showConfirmDialog (null, "Apakah anda ingin menghapus postingan ini??","Warning",dialogButton);
+        int dialogResult = JOptionPane.showConfirmDialog (null, "Apakah anda ingin menghapus komentar ini?","Warning",dialogButton);
         if(dialogResult == JOptionPane.YES_OPTION){
-          // Saving code here
-          System.out.print("Ya");
-            try (Connection conn = Connect.getConnection(); Statement stmt = conn.createStatement()) {
-                String deleteComment = "DELETE FROM comments WHERE id = " + data.getId();             
-                int i = stmt.executeUpdate(deleteComment);
-                if (i > 0) {
-                    JOptionPane.showMessageDialog(null,
-                    "Komentar berhasil dihapus!");
-                    this.setVisible(false);
-                } else {
-                    JOptionPane.showMessageDialog(null,
-                    "Komentar ini sudah tidak tersedia!");
-                    this.setVisible(false);
-                }
-
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
+            int i = data.deleteComment(data.getId());
+            if (i > 0) {
+                JOptionPane.showMessageDialog(null,
+                "Komentar berhasil dihapus!");
+                this.setVisible(false);
+            } else {
+                JOptionPane.showMessageDialog(null,
+                "Komentar ini sudah tidak tersedia!");
+                this.setVisible(false);
             }
         }
     }//GEN-LAST:event_DeleteActionPerformed
+
+    private void nameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nameMouseClicked
+        // TODO add your handling code here:
+        Profile profile = new Profile(data.getUserId());
+        profile.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        profile.setVisible(true);
+    }//GEN-LAST:event_nameMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
