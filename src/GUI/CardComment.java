@@ -29,7 +29,7 @@ public class CardComment extends javax.swing.JPanel {
         initComponents();
         Users user = new Users(data.getUserId());
         if(user.getId() != loadId()){
-            Delete.setVisible(false);
+            btnDelete.setVisible(false);
         }
         name.setText(user.getName());
         content.setText("<html>" + data.getContent().replace("\n", "<br>")+ "</html>");
@@ -46,7 +46,7 @@ public class CardComment extends javax.swing.JPanel {
 
         name = new javax.swing.JLabel();
         content = new javax.swing.JLabel();
-        Delete = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
 
         name.setText("Name");
         name.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -57,10 +57,10 @@ public class CardComment extends javax.swing.JPanel {
 
         content.setText("Content");
 
-        Delete.setText("Delete");
-        Delete.addActionListener(new java.awt.event.ActionListener() {
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DeleteActionPerformed(evt);
+                btnDeleteActionPerformed(evt);
             }
         });
 
@@ -73,7 +73,7 @@ public class CardComment extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(name)
                     .addComponent(content)
-                    .addComponent(Delete))
+                    .addComponent(btnDelete))
                 .addContainerGap(124, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -84,12 +84,12 @@ public class CardComment extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(content)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Delete)
+                .addComponent(btnDelete)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteActionPerformed
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
         int dialogButton = JOptionPane.YES_NO_OPTION;
         int dialogResult = JOptionPane.showConfirmDialog (null, "Apakah anda ingin menghapus komentar ini?","Warning",dialogButton);
@@ -105,7 +105,7 @@ public class CardComment extends javax.swing.JPanel {
                 this.setVisible(false);
             }
         }
-    }//GEN-LAST:event_DeleteActionPerformed
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void nameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nameMouseClicked
         // TODO add your handling code here:
@@ -116,7 +116,7 @@ public class CardComment extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Delete;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JLabel content;
     private javax.swing.JLabel name;
     // End of variables declaration//GEN-END:variables

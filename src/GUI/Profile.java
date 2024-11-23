@@ -45,7 +45,7 @@ public class Profile extends javax.swing.JFrame {
             ResultSet rsShare = stmt.executeQuery(totalShare);
             
             while(rsShare.next()){
-                totalPost.setText(String.valueOf(rsShare.getInt(1)));
+                totalSharing.setText(String.valueOf(rsShare.getInt(1)));
             }
             
            
@@ -114,7 +114,7 @@ public class Profile extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         name = new javax.swing.JLabel();
-        totalPost = new javax.swing.JLabel();
+        totalSharing = new javax.swing.JLabel();
         totalDiscussion = new javax.swing.JLabel();
         bio = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -148,8 +148,8 @@ public class Profile extends javax.swing.JFrame {
         name.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         name.setText("Rama Nusa Bakti");
 
-        totalPost.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        totalPost.setText("12");
+        totalSharing.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        totalSharing.setText("12");
 
         totalDiscussion.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         totalDiscussion.setText("120");
@@ -204,7 +204,7 @@ public class Profile extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(totalPost, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(totalSharing, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(56, 56, 56)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -227,7 +227,7 @@ public class Profile extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(name)
-                    .addComponent(totalPost)
+                    .addComponent(totalSharing)
                     .addComponent(totalDiscussion)
                     .addComponent(gender))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -418,6 +418,6 @@ public class Profile extends javax.swing.JFrame {
     private javax.swing.JLabel name;
     private javax.swing.JPanel panelPost;
     private javax.swing.JLabel totalDiscussion;
-    private javax.swing.JLabel totalPost;
+    private javax.swing.JLabel totalSharing;
     // End of variables declaration//GEN-END:variables
 }
